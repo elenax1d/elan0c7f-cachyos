@@ -4,7 +4,7 @@ A PKGBUILD that builds [jdtanner's experimental libfprint driver](https://github
 
 All the real work — reverse-engineering the sensor and writing the driver — is jdtanner's. This repo only packages it for Arch and fixes a few build problems.
 
-> ⚠️ **Experimental.** The driver is new, matching is done in software, and it misses sometimes (around 60% first-try matches on my laptop). The driver's author doesn't recommend it for login yet. Use it for the lock screen, keep your password, and don't use it for `sudo`.
+> ⚠️ **Experimental.** The driver is new, matching is done in software, and it misses sometimes (around 60% first-try matches with one enrollment on my laptop, 85–90% after enrolling the same finger 3 times — see the tip below). The driver's author doesn't recommend it for login yet. Use it for the lock screen, keep your password, and don't use it for `sudo`.
 
 ## Do I have this sensor?
 
@@ -40,7 +40,15 @@ If you see `Elan Microelectronics Corp. ELAN:Fingerprint`, and `fprintd-list $US
 5. Enroll a finger (KDE: System Settings › Users › Configure Fingerprint Authentication, or `fprintd-enroll`). **Press the same way every time**, the way you'll naturally touch it to unlock — moving the finger around during enrollment makes matching worse.
 6. Test: `fprintd-verify`
 
-**Tip:** enrolling the same finger 2–3 times under different names (`fprintd-enroll -f right-middle-finger`, …) gives the matcher more samples and improves the hit rate.
+**Tip — this makes a big difference:** enroll your unlock finger **3 times** under different finger names. Each enrollment is a separate set of samples, so later scans are much more likely to overlap one of them. On my laptop this took first-try matches from about **60% to 85–90%**.
+
+```
+fprintd-enroll -f right-index-finger
+fprintd-enroll -f right-middle-finger
+fprintd-enroll -f right-ring-finger
+```
+
+Use the **same physical finger** all three times, pressed naturally.
 
 ## What this PKGBUILD changes
 
